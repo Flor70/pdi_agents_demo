@@ -1,0 +1,27 @@
+# requirements file
+# note which revision of python, for example 3.9.6
+# in this file, insert all the pip install needs, include revision
+
+# Core dependencies
+crewai[tools]
+openai>=1.0.0
+
+# Data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# web searching
+exa-py
+
+# PDF and text processing
+pypdf>=3.0.0
+tiktoken>=0.5.0
+
+# SQLite dependency (needed for Streamlit Cloud)
+pysqlite3-binary>=0.5.2
+
+# Streamlit
+streamlit>=1.29.0
+
+# Visualization
+plotly>=5.18.0
