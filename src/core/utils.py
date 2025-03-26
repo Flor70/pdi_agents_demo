@@ -7,16 +7,19 @@ from tools.educational_content_tool import ReadEducationalDBTool
 from tools.serper_search_tool import SerperSearchTool
 from tools.exa_search_tool import ExaSearchTool
 from models.pdi_models import PDIConfig
+from .helper import groq_llm, claude_llm
+
 
 def load_config(agents_file, tasks_file):
     """Carrega as configurações dos arquivos YAML"""
     with open(agents_file, 'r', encoding='utf-8') as f:
         agents_config = yaml.safe_load(f)
-    
+
     with open(tasks_file, 'r', encoding='utf-8') as f:
         tasks_config = yaml.safe_load(f)
-    
+
     return agents_config, tasks_config
+
 
 def create_agents(agents_config):
     """Cria e retorna os agents individualmente configurados"""
@@ -24,13 +27,14 @@ def create_agents(agents_config):
     educational_db_tool = ReadEducationalDBTool()
     serper_tool = SerperSearchTool()
     search_tool = ExaSearchTool()
-    
+
     # Creating Agents
     leitor_de_planilha = Agent(
         config=agents_config['leitor_de_planilha'],
         verbose=True,
         tools=[educational_db_tool],
-        cache=True
+        cache=True,
+        llm=groq_llm
     )
 
     analista_de_perfis = Agent(
@@ -73,7 +77,7 @@ def create_agents(agents_config):
         tools=[],
         cache=True
     )
-    
+
     return {
         'leitor_de_planilha': leitor_de_planilha,
         'analista_de_perfis': analista_de_perfis,
@@ -84,18 +88,19 @@ def create_agents(agents_config):
         'content_organizer': content_organizer
     }
 
+
 def create_tasks(tasks_config, agents, interview_data=None):
     """Cria e retorna as tasks individualmente configuradas"""
     # Interpola os dados da entrevista nas descrições das tasks
     if interview_data:
         for task_name in ['analise_subjetiva_colaborador', 'recomendacao_conteudos',
-                         'technical_skills_research', 'behavioral_skills_research',
-                         'industry_trends_and_inspiration_research']:
+                          'technical_skills_research', 'behavioral_skills_research',
+                          'industry_trends_and_inspiration_research']:
             if task_name in tasks_config:
                 tasks_config[task_name]['description'] = \
                     tasks_config[task_name]['description'].format(
-                interview_data=interview_data
-            )
+                    interview_data=interview_data
+                )
 
     # Creating Tasks
     ler_planilha = Task(
@@ -144,8 +149,8 @@ def create_tasks(tasks_config, agents, interview_data=None):
         config=tasks_config['aggregate_and_structure_research'],
         agent=agents['content_organizer'],
         context=[
-            technical_skills_research, 
-            behavioral_skills_research, 
+            technical_skills_research,
+            behavioral_skills_research,
             industry_trends_research
         ],
         output_file='output/aggregated_research.md'
@@ -172,8 +177,6 @@ def create_tasks(tasks_config, agents, interview_data=None):
         ]
     )
 
-
-
     generate_final_summary = Task(
         config=tasks_config['generate_final_summary'],
         agent=agents['final_writer'],
@@ -185,7 +188,7 @@ def create_tasks(tasks_config, agents, interview_data=None):
         ],
         output_file='output/final_summary.md'
     )
-    
+
     return [
         ler_planilha,
         analise_subjetiva_colaborador,
@@ -199,20 +202,21 @@ def create_tasks(tasks_config, agents, interview_data=None):
         generate_final_summary
     ]
 
+
 async def create_crew(agents_config, tasks_config, interview_data=None, openai_api_key=None):
     """Cria e retorna a crew com agents e tasks configurados"""
     if not openai_api_key:
         raise ValueError("OpenAI API key is required")
-    
+
     os.environ["OPENAI_API_KEY"] = openai_api_key
-    
+
     # Create agents and tasks
     agents = create_agents(agents_config)
     tasks = create_tasks(tasks_config, agents, interview_data)
-    
+
     # Get list of agents
     agent_list = list(agents.values())
-    
+
     # Create and return crew
     crew = Crew(
         agents=agent_list,
@@ -220,5 +224,5 @@ async def create_crew(agents_config, tasks_config, interview_data=None, openai_a
         verbose=True,
         process=Process.sequential
     )
-    
+
     return crew

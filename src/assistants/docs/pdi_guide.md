@@ -50,7 +50,8 @@ Parabéns! Nossos agentes especializados acabaram de criar seu Plano de Desenvol
 2. Clique no botão "💬 Consultor PDI Bot" para fazer perguntas sobre qualquer aspecto do seu plano
 3. Clique no botão "📊 Visualização do PDI" para visualizar o seu plano de desenvolviment
 4. Clique no botão "📱 LinkedIn Post" para criar posts no LinkedIn com base no seu PDI.
-3. Explore cada documento na ordem sugerida acima para uma compreensão completa
+5. Clique no botão mestre dos magos para conversar com um assistente sábio e holístico
+6. Explore cada documento na ordem sugerida acima para uma compreensão completa
 
 ## 💡 Dica
 Para tirar o máximo proveito do seu PDI, comece pelo Sumário Executivo e depois explore os documentos específicos conforme seu interesse. Use o chatbot consultor para esclarecer dúvidas ou aprofundar qualquer tópico!

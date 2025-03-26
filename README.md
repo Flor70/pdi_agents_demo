@@ -1,6 +1,6 @@
-# PDI Crew
+# Templo PDI Agents
 
-Sistema de Análise de Desenvolvimento Profissional baseado em CrewAI
+Sistema de Análise de Desenvolvimento Profissional baseado em fluxos de agents de IA
 
 ## Descrição
 
